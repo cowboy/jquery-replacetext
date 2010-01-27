@@ -34,8 +34,8 @@
 // Information about what version or versions of jQuery this plugin has been
 // tested with, and what browsers it has been tested in.
 // 
-// jQuery Versions - 1.3.2
-// Browsers Tested - Internet Explorer 6-8, Firefox 3-3.5, Safari 3-4, Chrome, Opera 9.6-10.
+// jQuery Versions - 1.3.2, 1.4.1
+// Browsers Tested - Internet Explorer 6-8, Firefox 2-3.6, Safari 3-4, Chrome, Opera 9.6-10.1.
 // 
 // About: Release History
 // 
