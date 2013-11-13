@@ -39,6 +39,7 @@
 //
 // About: Release History
 //
+// 1.2 - (11/13/2013) Maintain escaped HTML entities.
 // 1.1 - (11/21/2009) Simplified the code and API substantially.
 // 1.0 - (11/21/2009) Initial release
 
@@ -76,6 +77,56 @@
   //
   //  (jQuery) The initial jQuery collection of elements.
 
+  // Map to escape HTML entities
+  var entity_map = {
+    escape : {
+      '>' : '&gt;',
+      '<' : '&lt;',
+      '"' : '&quot;',
+      "'" : '&#x27;',
+      '&' : '&amp;'
+    },
+    unescape : {} // We will set this below
+  };
+
+  // We will use these arrays to build regular expressions for escaping
+  var unescapedChars = [],
+    escapedChars = [];
+
+  for ( key in entity_map.escape ) {
+    // Add an inverted `unescape` object to unescape HTML
+    entity_map.unescape[ entity_map.escape[key] ] = key;
+
+    // Track both the escaped and unescaped versions
+    unescapedChars.push(key);
+    escapedChars.push(entity_map.escape[key]);
+  }
+
+  // Build regular expressions to escape with
+  var entity_regex = {
+    escape : new RegExp( '[' + unescapedChars.join('') + ']', 'g'),
+    unescape : new RegExp( '(' + escapedChars.join('|') + ')', 'g')
+  };
+
+  // Generically escape or unescape HTML entities in the code
+  function esc( str, method ) {
+    // Nothing to do with null or empty string
+    if (!str) return str;
+
+    // Replace proper strings with their corresponding replacements
+    return str.replace(entity_regex[method], function( match ) {
+      return entity_map[method][match];
+    });
+  };
+
+  function escapeHtml( str ) {
+    return esc(str, 'escape');
+  }
+
+  function unescapeHtml( str ) {
+    return esc(str, 'unescape');
+  }
+
   $.fn.replaceText = function( search, replace, text_only ) {
     return this.each(function(){
       var node = this.firstChild,
@@ -95,7 +146,9 @@
           if ( node.nodeType === 3 ) {
 
             // The original node value.
-            val = node.nodeValue;
+            // We need to escape existing HTML because `nodeValue` unescapes
+            // escaped HTML values.
+            val = escapeHtml(node.nodeValue);
 
             // The new value.
             new_val = val.replace( search, replace );
@@ -113,7 +166,9 @@
               } else {
                 // The new value contains no HTML, so it can be set in this
                 // very fast, simple way.
-                node.nodeValue = new_val;
+                // We need to unescape the HTML now, because we previously
+                // escaped it.
+                node.nodeValue = unescapeHtml(new_val);
               }
             }
           }
