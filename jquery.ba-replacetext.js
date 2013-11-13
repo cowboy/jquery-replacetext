@@ -75,6 +75,20 @@
   // Returns:
   // 
   //  (jQuery) The initial jQuery collection of elements.
+
+  var entityMap = {
+    '&' : '&amp;',
+    '"' : '&quot;',
+    '>' : '&gt;',
+    '<' : '&lt;'
+  };
+
+  function escapeHtml( str ) {
+    // Escape HTML characters
+    return str.replace(/[><"&]/g, function( match ) {
+      return entityMap[match];
+    });
+  }
   
   $.fn.replaceText = function( search, replace, text_only ) {
     return this.each(function(){
@@ -95,7 +109,9 @@
           if ( node.nodeType === 3 ) {
             
             // The original node value.
-            val = node.nodeValue;
+            // We have to escape HTML because `nodeValue` will un-escape
+            // any escaped HTML inside, and we don't want to change that.
+            val = escapeHtml(node.nodeValue);
             
             // The new value.
             new_val = val.replace( search, replace );
