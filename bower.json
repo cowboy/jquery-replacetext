@@ -1,0 +1,21 @@
+{
+  "name": "jquery-replacetext",
+  "homepage": "https://github.com/cowboy/jquery-replacetext",
+  "authors": [
+    "Ben Alman <cowboy@rj3.net>"
+  ],
+  "description": "",
+  "main": "jquery.ba-replacetext.min.js",
+  "moduleType": [],
+  "license": "MIT",
+  "dependencies": {
+     "jquery": "*"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
